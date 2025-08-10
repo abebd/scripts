@@ -32,7 +32,6 @@ git_autopush ~/vent
 #git_autopush /mnt/c/Users/twist/Documents/Obsidian/main/Media
 
 # check if param was provided and autopush that repo
-
 for arg in "$@"
 do
     git_autopush "$arg"
