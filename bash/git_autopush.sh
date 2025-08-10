@@ -3,7 +3,7 @@
 # author    when        what
 # abeb      2025-04-09  initial commit
 
-git-autopush() {
+git_autopush() {
     # takes the repository path as first parameter
     echo "Checking repo at: $1"
 
@@ -25,7 +25,12 @@ git-autopush() {
 }
 
 # list all repos to autopush
-git-autopush ~/vent
+git_autopush ~/vent
+#git_autopush /mnt/c/Users/twist/Documents/Obsidian/main/Media
 
-#git-autopush /mnt/c/Users/twist/Documents/Obsidian/main/Media
+# check if param was provided and autopush that repo
 
+for arg in "$@"
+do
+    git_autopush "$arg"
+done
