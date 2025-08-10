@@ -5,23 +5,26 @@
 
 git_autopush() {
     # takes the repository path as first parameter
-    echo "Checking repo at: $1"
+    echo "$1: Running git status..."
 
-    cd $1
+    cd "$1"
     
     if [ $(git status --porcelain | wc -l) -eq 0 ]; then
+        echo "$1: Found no changes since the last commit ("$(git log -1 --format=%s)")"
         return
     fi
 
     date=$(date +%Y-%m-%d\ %H:%M:%S)
-
-    echo "Created commit: $date"
+    commit_msg="* Auto commit @$date"
+    echo "Created commit: '$commit_msg'"
 
     git add . > /dev/null 2>&1 &
     # git commit -m "* Auto commit @$(date +%Y-%m-%d\ %H:%M:%S)" > /dev/null 2>&1 &
-    git commit -m "* Auto commit @$date" #> /dev/null 2>&1 &
+    git commit -m "$commit_msg" #> /dev/null 2>&1 &
     #git push --force > /dev/null 2>&1 &
     git push 
+    
+    echo "$1: Pushed commit: $commit_msg"
 }
 
 # list all repos to autopush
