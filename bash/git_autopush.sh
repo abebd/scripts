@@ -36,7 +36,8 @@ git_autopush() {
 # list all repos to autopush
 git_autopush ~/vent
 git_autopush ~/git/scripts/
-check if param was provided and autopush that repo
+
+# check if param was provided and autopush that repo
 for arg in "$@"
 do
     git_autopush "$arg"
