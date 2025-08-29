@@ -14,11 +14,17 @@ git_autopush() {
         return
     fi
 
+    ix_lock_fp="$1/.git/index.lock"
+    if [ -f $ix_lock_fp ]; then
+        rm $ix_lock_fp
+        echo "$1: Removed $ix_lock_fp..."
+    fi
+
     date=$(date +%Y-%m-%d\ %H:%M:%S)
     commit_msg="* Auto commit @$date"
-    echo "Created commit: '$commit_msg'"
+    echo "$1: Created commit: '$commit_msg'"
 
-    git add . > /dev/null 2>&1 &
+    git add . #> /dev/null 2>&1 &
     # git commit -m "* Auto commit @$(date +%Y-%m-%d\ %H:%M:%S)" > /dev/null 2>&1 &
     git commit -m "$commit_msg" #> /dev/null 2>&1 &
     #git push --force > /dev/null 2>&1 &
@@ -29,9 +35,8 @@ git_autopush() {
 
 # list all repos to autopush
 git_autopush ~/vent
-#git_autopush /mnt/c/Users/twist/Documents/Obsidian/main/Media
-
-# check if param was provided and autopush that repo
+git_autopush ~/git/scripts/
+check if param was provided and autopush that repo
 for arg in "$@"
 do
     git_autopush "$arg"
