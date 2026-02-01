@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+#
+# packages:
+# - chafa
+# - feh
+#
+
+VERSION=0.1.0
+
+WALL_DIR="$HOME/Pictures/Wallpapers"
+CURRENT_WALLPAPER="$HOME/.current_wallpaper"
+
+apply_wallpaper() {
+    local content=$(cat $CURRENT_WALLPAPER)
+
+    if [[ -n $content ]]; then
+        feh --bg-fill $content
+    fi
+}
+
+set_wallpaper() {
+    local file="$1"
+
+    if [[ -z "$file" ]]; then
+        echo "Error: No file provided."
+        echo "Usage: wallpaper --set <file>"
+        return 1
+    fi
+
+    if [[ ! -f "$file" ]]; then 
+        echo "Error: File does not exist: $file"
+        return 1
+    fi
+    
+    echo "$file" > "$CURRENT_WALLPAPER"
+    feh --bg-fill "$file"
+}
+
+choose_wallpaper() {
+    local selected=$(ls "$WALL_DIR" | fzf \
+        --preview "chafa --size 300x300 '$WALL_DIR/{}'" \
+        --preview-window=right:60%:wrap)
+
+    echo "$WALL_DIR/$selected" > $CURRENT_WALLPAPER
+
+    if [ -n "$selected" ]; then
+        feh --bg-fill "$WALL_DIR/$selected"
+    fi
+}
+
+print_help() {
+    cat <<EOF
+Usage: wallpaper [option]
+
+Options:
+  -h, --help        Show this help message
+  -a, --apply       Apply the saved wallpaper from disk
+  -s, --set <file>  Set the wallpaper and make it the default
+  -c, --choose      Choose a wallpaper interactively (default)
+
+Behavior:
+  If no arguments are provided, the script opens the wallpaper chooser.
+EOF
+}
+
+case "$1" in
+    -v|--version)
+        echo "wallpaper $VERSION"
+        ;;
+    -h|--help)
+        print_help
+        ;;
+    -a|--apply)
+        apply_wallpaper
+        ;;
+    -s|--set)
+        set_wallpaper "$2"
+        ;;
+    -c|--choose|"")
+        choose_wallpaper
+        ;;
+    *)
+        echo "Unknown option: $1"
+        echo "Use --help for usage."
+        exit 1
+        ;;
+esac
